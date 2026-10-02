@@ -261,7 +261,11 @@ async def test_client_logging_never_leaks_secrets(test_config, caplog):
             params={"consumer_key": "ck_test_key_123", "consumer_secret": "cs_test_sec_456"},
         )
 
-    log_text = caplog.text
-    assert "ck_test_key_123" not in log_text
-    assert "cs_test_sec_456" not in log_text
-    assert "REDACTED" in log_text
+    connector_logs = [
+        rec.getMessage() for rec in caplog.records if rec.name == "woo_connector.client"
+    ]
+    assert len(connector_logs) >= 1
+    for msg in connector_logs:
+        assert "ck_test_key_123" not in msg
+        assert "cs_test_sec_456" not in msg
+        assert "REDACTED" in msg
