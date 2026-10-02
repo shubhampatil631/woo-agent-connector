@@ -1,0 +1,21 @@
+You are my senior engineer pair. We are building a take-home assignment for Razorpay's
+Forward-Deployed Engineer (Agent Studio) role, due within 24 hours.
+
+ASSIGNMENT: Build a private connector for WooCommerce that lets an Agent Studio agent
+read orders and inventory. Required: working API-key/OAuth auth flow, list/get/search
+primitives, rate-limit handling, an MCP tool specification, and a short document on what
+the agent can and cannot do. Also required: setup/run instructions, assumptions, and
+limitations. No real customer data, passwords, or API keys anywhere in the repo.
+
+STACK: Python 3.11+, httpx (async), pydantic v2, FastMCP from the official `mcp` SDK,
+pytest + respx, ruff, Docker Compose for a local WooCommerce.
+
+PRINCIPLES:
+- Read-only. No write/delete tools exist at all.
+- PII-safe by default: redact email, phone, and addresses unless PII_MODE=full.
+- Agent-friendly: compact outputs, clear errors the LLM can act on, bounded page sizes.
+- Every secret comes from env vars; commit only .env.example.
+- Small, typed, tested modules. No over-engineering.
+
+Work in repo root. After each task, summarize what you did, list files changed, and tell
+me the exact command to verify. Do not start the next task until I say so.
