@@ -332,3 +332,32 @@ async def test_tool_edge_cases_and_validations(mock_client):
     )
     with pytest.raises(NotFoundError):
         await get_stock(mock_client, product_id_or_sku="UNKNOWN-SKU-XYZ")
+
+
+@respx.mock
+async def test_order_tools_never_leak_raw_pii_in_default_mode(mock_client):
+    """Confirm order read tools strictly redact customer PII in default mode."""
+    order_data = load_fixture("order_sample.json")
+    # Verify raw fixture contains sensitive details
+    assert "john.doe@example.com" in json.dumps(order_data)
+    assert "+1-555-123-4567" in json.dumps(order_data)
+    assert "123 Main Street" in json.dumps(order_data)
+
+    respx.get("https://store.example.com/wp-json/wc/v3/orders/1001").respond(
+        status_code=200,
+        json=order_data,
+    )
+
+    detail: OrderDetail = await get_order(mock_client, order_id=1001)
+    detail_json = detail.model_dump_json()
+
+    # Raw PII must NOT appear anywhere in the serialized model
+    assert "john.doe@example.com" not in detail_json
+    assert "+1-555-123-4567" not in detail_json
+    assert "123 Main Street" not in detail_json
+
+    # Redacted values must appear
+    assert "j***@example.com" in detail_json
+    assert "***-***-**67" in detail_json
+    assert "[REDACTED]" in detail_json
+

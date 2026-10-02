@@ -42,6 +42,7 @@ env/
 .coverage
 htmlcov/
 .mypy_cache/
+scratch/
 
 # Docker & WooCommerce local volumes
 volumes/
