@@ -263,3 +263,72 @@ def test_map_exception_to_tool_error():
     val_err = map_exception_to_tool_error(ValidationError("Invalid param"))
     assert val_err.code == "INVALID_INPUT"
     assert val_err.retryable is False
+
+    generic_err = map_exception_to_tool_error(ValueError("Some internal failure"))
+    assert generic_err.code == "INTERNAL_ERROR"
+
+
+@respx.mock
+async def test_tool_edge_cases_and_validations(mock_client):
+    # ValidationError on negative page/per_page
+    with pytest.raises(ValidationError):
+        await list_orders(mock_client, page=-1)
+    with pytest.raises(ValidationError):
+        await list_orders(mock_client, per_page=0)
+    with pytest.raises(ValidationError):
+        await list_orders(mock_client, before="invalid-date")
+    with pytest.raises(ValidationError):
+        await list_orders(mock_client, customer_id=-5)
+
+    with pytest.raises(ValidationError):
+        await get_order(mock_client, order_id=0)
+
+    with pytest.raises(ValidationError):
+        await search_orders(mock_client, query="")
+    with pytest.raises(ValidationError):
+        await search_orders(mock_client, query="test", page=0)
+    with pytest.raises(ValidationError):
+        await search_orders(mock_client, query="test", per_page=0)
+
+    with pytest.raises(ValidationError):
+        await list_products(mock_client, page=0)
+    with pytest.raises(ValidationError):
+        await list_products(mock_client, per_page=0)
+    with pytest.raises(ValidationError):
+        await list_products(mock_client, stock_status="invalid_stock_status")
+
+    with pytest.raises(ValidationError):
+        await get_product(mock_client, product_id=-1)
+
+    with pytest.raises(ValidationError):
+        await search_products(mock_client, page=0)
+    with pytest.raises(ValidationError):
+        await search_products(mock_client, per_page=0)
+    with pytest.raises(ValidationError):
+        await search_products(mock_client)
+
+    with pytest.raises(ValidationError):
+        await get_stock(mock_client, product_id_or_sku="   ")
+
+    with pytest.raises(ValidationError):
+        await list_low_stock(mock_client, threshold=-1)
+    with pytest.raises(ValidationError):
+        await list_low_stock(mock_client, page=0)
+    with pytest.raises(ValidationError):
+        await list_low_stock(mock_client, per_page=0)
+
+    # Product not found
+    respx.get("https://store.example.com/wp-json/wc/v3/products/999").respond(
+        status_code=404,
+        json={"code": "woocommerce_rest_product_invalid_id", "message": "Invalid ID."},
+    )
+    with pytest.raises(NotFoundError):
+        await get_product(mock_client, product_id=999)
+
+    # SKU not found in stock search
+    respx.get("https://store.example.com/wp-json/wc/v3/products").respond(
+        status_code=200,
+        json=[],
+    )
+    with pytest.raises(NotFoundError):
+        await get_stock(mock_client, product_id_or_sku="UNKNOWN-SKU-XYZ")

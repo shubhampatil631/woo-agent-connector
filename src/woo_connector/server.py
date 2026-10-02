@@ -54,6 +54,11 @@ logger = logging.getLogger("woo-mcp-server")
 mcp = FastMCP("woocommerce-connector")
 
 
+def get_client() -> WooClient:
+    """Return a managed WooClient instance."""
+    return WooClient()
+
+
 # =====================================================================
 # MCP Resources
 # =====================================================================
@@ -62,7 +67,7 @@ mcp = FastMCP("woocommerce-connector")
 @mcp.resource("woo://store/status")
 async def store_status_resource() -> str:
     """Store connectivity, versions, and active currency metadata."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             status = await tool_get_store_status(client)
             return status.model_dump_json(indent=2)
@@ -105,7 +110,7 @@ async def list_orders(
     per_page: int = 50,
 ) -> dict[str, Any]:
     """List store orders with filtering and pagination."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             result = await tool_list_orders(
                 client=client,
@@ -118,7 +123,7 @@ async def list_orders(
             )
             return result.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -132,12 +137,12 @@ async def list_orders(
 )
 async def get_order(order_id: int) -> dict[str, Any]:
     """Get full details of a specific order."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             detail = await tool_get_order(client=client, order_id=order_id)
             return detail.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -156,7 +161,7 @@ async def search_orders(
     per_page: int = 50,
 ) -> dict[str, Any]:
     """Search orders across order numbers and customer details."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             result = await tool_search_orders(
                 client=client,
@@ -167,7 +172,7 @@ async def search_orders(
             )
             return result.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -187,7 +192,7 @@ async def list_products(
     per_page: int = 50,
 ) -> dict[str, Any]:
     """List catalog products with filtering and pagination."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             result = await tool_list_products(
                 client=client,
@@ -199,7 +204,7 @@ async def list_products(
             )
             return result.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -211,12 +216,12 @@ async def list_products(
 )
 async def get_product(product_id: int) -> dict[str, Any]:
     """Get metadata for a single product by ID."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             product = await tool_get_product(client=client, product_id=product_id)
             return product.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -233,7 +238,7 @@ async def search_products(
     per_page: int = 50,
 ) -> dict[str, Any]:
     """Search products by keyword or SKU."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             result = await tool_search_products(
                 client=client,
@@ -244,7 +249,7 @@ async def search_products(
             )
             return result.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -256,12 +261,12 @@ async def search_products(
 )
 async def get_stock(product_id_or_sku: str) -> dict[str, Any]:
     """Get inventory level and stock status for a product or SKU."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             stock = await tool_get_stock(client=client, product_id_or_sku=product_id_or_sku)
             return stock.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -278,7 +283,7 @@ async def list_low_stock(
     per_page: int = 50,
 ) -> dict[str, Any]:
     """List low-stock and out-of-stock items."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             result = await tool_list_low_stock(
                 client=client,
@@ -288,7 +293,7 @@ async def list_low_stock(
             )
             return result.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 @mcp.tool(
@@ -300,12 +305,12 @@ async def list_low_stock(
 )
 async def get_store_status() -> dict[str, Any]:
     """Check store connection health and software versions."""
-    async with WooClient() as client:
+    async with get_client() as client:
         try:
             status = await tool_get_store_status(client)
             return status.model_dump()
         except Exception as exc:
-            return {"error": map_exception_to_tool_error(exc).model_dump()}
+            return map_exception_to_tool_error(exc).model_dump()
 
 
 # =====================================================================

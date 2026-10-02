@@ -111,3 +111,41 @@ def test_bearer_auth_middleware_flow():
     resp_valid = client.get("/test", headers={"Authorization": "Bearer expected-secure-token"})
     assert resp_valid.status_code == 200
     assert resp_valid.json() == {"status": "ok"}
+
+
+@respx.mock
+async def test_store_status_resource_error():
+    respx.get("http://localhost:8080/wp-json/wc/v3/system_status").respond(
+        status_code=500,
+        text="Store unreachable",
+    )
+    content = await store_status_resource()
+    assert "UPSTREAM_ERROR" in content
+
+
+def test_server_main_stdio_dispatch(monkeypatch):
+    from unittest.mock import patch
+
+    from woo_connector.server import main
+
+    with patch("woo_connector.server.mcp.run", return_value=None) as mock_run:
+        monkeypatch.setattr(
+            "sys.argv",
+            ["server.py", "--transport", "stdio", "--skip-startup-check"],
+        )
+        main()
+        assert mock_run.called
+
+
+def test_server_main_http_dispatch(monkeypatch):
+    from unittest.mock import patch
+
+    from woo_connector.server import main
+
+    with patch("uvicorn.run", return_value=None) as mock_uvicorn:
+        monkeypatch.setattr(
+            "sys.argv",
+            ["server.py", "--transport", "http", "--port", "9000", "--skip-startup-check"],
+        )
+        main()
+        assert mock_uvicorn.called
