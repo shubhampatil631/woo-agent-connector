@@ -1,0 +1,58 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Databases & SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Testing & linting
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Docker & WooCommerce local volumes
+volumes/
+docker/data/
+docker/wp-data/
+docker/db-data/
+docker/mysql_data/
+docker/wordpress_data/
+
+# IDE & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
