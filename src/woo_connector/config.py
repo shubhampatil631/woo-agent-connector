@@ -95,6 +95,14 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("MAX_RETRIES", "WOO_MAX_RETRIES", "max_retries"),
         description="Maximum retry attempts for rate limits and transient errors",
     )
+    backoff_factor: float = Field(
+        default=1.5,
+        gt=0,
+        validation_alias=AliasChoices(
+            "BACKOFF_FACTOR", "WOO_BACKOFF_FACTOR", "backoff_factor"
+        ),
+        description="Exponential backoff multiplier for retries",
+    )
     connector_api_key: str | None = Field(
         default=None,
         validation_alias=AliasChoices(
@@ -144,6 +152,7 @@ class Settings(BaseSettings):
             f"rate_limit_rps={self.rate_limit_rps}, "
             f"request_timeout={self.request_timeout}, "
             f"max_retries={self.max_retries}, "
+            f"backoff_factor={self.backoff_factor}, "
             f"connector_api_key={mask_secret(self.connector_api_key)!r}"
             f")"
         )
