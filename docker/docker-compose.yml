@@ -1,0 +1,67 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: woo_sandbox_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_db_password_local
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_password_local
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - woo_net
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "wordpress", "-pwordpress_password_local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:6.4-apache
+    container_name: woo_sandbox_wp
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password_local
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - woo_net
+    depends_on:
+      db:
+        condition: service_healthy
+
+  wpcli:
+    image: wordpress:cli-php8.2
+    container_name: woo_sandbox_wpcli
+    user: "33:33" # www-data user to avoid permissions issues
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password_local
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wp_data:/var/www/html
+      - ./init-woocommerce.sh:/scripts/init-woocommerce.sh:ro
+    entrypoint: ["/bin/sh", "/scripts/init-woocommerce.sh"]
+    networks:
+      - woo_net
+    depends_on:
+      wordpress:
+        condition: service_started
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  wp_data:
+
+networks:
+  woo_net:
+    driver: bridge

@@ -1,17 +1,30 @@
-.PHONY: help install test lint format clean docker-up docker-down
+.PHONY: help install up down seed test lint format run clean
 
 help:
 	@echo "Available commands:"
-	@echo "  install      Install dependencies with uv / pip"
-	@echo "  test         Run tests with pytest"
-	@echo "  lint         Run ruff checks"
+	@echo "  up           Start local WooCommerce sandbox and initialize store with API keys"
+	@echo "  down         Stop local WooCommerce sandbox"
+	@echo "  seed         Seed sandbox with ~40 products and ~120 orders across statuses"
+	@echo "  test         Run test suite with pytest"
+	@echo "  lint         Run ruff linter checks"
 	@echo "  format       Format code with ruff"
-	@echo "  clean        Remove temporary files and caches"
-	@echo "  docker-up    Start local WooCommerce sandbox"
-	@echo "  docker-down  Stop local WooCommerce sandbox"
+	@echo "  run          Start the FastMCP WooCommerce server"
+	@echo "  install      Install connector dependencies in editable mode"
+	@echo "  clean        Remove build, test, and cache artifacts"
 
 install:
 	uv pip install -e ".[dev]"
+
+up:
+	docker compose up -d
+	@echo "Waiting for WooCommerce sandbox to complete initialization..."
+	docker compose logs -f wpcli
+
+down:
+	docker compose down
+
+seed:
+	python scripts/seed.py
 
 test:
 	pytest -v
@@ -22,11 +35,8 @@ lint:
 format:
 	ruff format .
 
+run:
+	woo-mcp
+
 clean:
 	rm -rf .pytest_cache .ruff_cache __pycache__ src/**/__pycache__ tests/__pycache__ dist build *.egg-info
-
-docker-up:
-	docker compose -f docker/docker-compose.yml up -d
-
-docker-down:
-	docker compose -f docker/docker-compose.yml down
