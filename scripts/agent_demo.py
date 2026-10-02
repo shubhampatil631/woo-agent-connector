@@ -218,6 +218,12 @@ async def run_simulated_agent(client: WooClient) -> None:
 async def main() -> None:
     """Main runner."""
     parser = argparse.ArgumentParser(description="WooCommerce MCP Agent Loop Demo")
+    parser.add_argument(
+        "--mock",
+        action="store_true",
+        default=True,
+        help="Run against zero-dependency in-process mock server (default: True)",
+    )
     parser.parse_args()
 
     api_key = os.getenv("ANTHROPIC_API_KEY")
