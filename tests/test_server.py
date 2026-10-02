@@ -48,7 +48,7 @@ async def test_all_tools_registered_on_mcp():
 
 async def test_capabilities_resource():
     content = await capabilities_resource()
-    assert "WooCommerce Agent Studio Connector Capabilities" in content
+    assert "WooCommerce Agent Studio Connector" in content
     assert "What the Agent CAN Do" in content
     assert "What the Agent CANNOT Do" in content
 

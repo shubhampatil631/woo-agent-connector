@@ -60,7 +60,13 @@ def print_header(title: str, step: str) -> None:
 def create_client(is_mock: bool, pii_mode: str = "redacted", bad_creds: bool = False) -> WooClient:
     """Create WooClient for live store or in-process mock."""
     if is_mock:
+        from pathlib import Path
+
         from httpx import ASGITransport, AsyncClient
+
+        repo_root = str(Path(__file__).resolve().parent.parent)
+        if repo_root not in sys.path:
+            sys.path.insert(0, repo_root)
 
         from tests.mock_woo import app as mock_app
         from tests.mock_woo import state as mock_state

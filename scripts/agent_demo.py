@@ -21,7 +21,6 @@ from typing import Any
 from rich.console import Console
 from rich.panel import Panel
 
-from tests.mock_woo import app as mock_app
 from woo_connector.client import WooClient
 from woo_connector.config import Settings
 from woo_connector.server import mcp
@@ -43,6 +42,11 @@ def get_mock_client() -> WooClient:
     """Create in-process mock client for demo execution."""
     from httpx import ASGITransport, AsyncClient
 
+    repo_root = str(Path(__file__).resolve().parent.parent)
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
+
+    from tests.mock_woo import app as mock_app
     from tests.mock_woo import state as mock_state
     from woo_connector.auth import get_auth_strategy
 
