@@ -1,0 +1,14 @@
+{
+  "id": 401,
+  "name": "Wireless Noise-Canceling Headphones",
+  "slug": "wireless-noise-canceling-headphones",
+  "type": "simple",
+  "status": "publish",
+  "price": "99.99",
+  "regular_price": "99.99",
+  "sku": "HEADPHONE-NC",
+  "manage_stock": true,
+  "stock_quantity": 25,
+  "stock_status": "instock",
+  "backorders": "no"
+}

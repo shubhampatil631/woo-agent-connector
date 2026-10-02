@@ -1,0 +1,11 @@
+{
+  "environment": {
+    "wp_version": "6.4.3",
+    "version": "8.5.1"
+  },
+  "settings": {
+    "currency": "USD",
+    "currency_symbol": "$",
+    "timezone": "UTC"
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 401,
+    "name": "Wireless Noise-Canceling Headphones",
+    "type": "simple",
+    "status": "publish",
+    "price": "99.99",
+    "sku": "HEADPHONE-NC",
+    "manage_stock": true,
+    "stock_quantity": 25,
+    "stock_status": "instock",
+    "backorders": "no"
+  },
+  {
+    "id": 402,
+    "name": "Mechanical RGB Keyboard",
+    "type": "simple",
+    "status": "publish",
+    "price": "79.50",
+    "sku": "KEYBOARD-RGB",
+    "manage_stock": true,
+    "stock_quantity": 3,
+    "stock_status": "instock",
+    "backorders": "no"
+  },
+  {
+    "id": 403,
+    "name": "Ultra-HD 4K Action Camera",
+    "type": "simple",
+    "status": "publish",
+    "price": "149.00",
+    "sku": "CAMERA-4K",
+    "manage_stock": true,
+    "stock_quantity": 0,
+    "stock_status": "outofstock",
+    "backorders": "no"
+  }
+]

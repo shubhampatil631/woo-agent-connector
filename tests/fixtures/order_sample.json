@@ -1,0 +1,50 @@
+{
+  "id": 101,
+  "number": "101",
+  "status": "processing",
+  "date_created": "2026-10-01T12:00:00",
+  "total": "129.99",
+  "currency": "USD",
+  "customer_id": 12,
+  "customer_note": "Please leave at front door",
+  "payment_method": "stripe",
+  "payment_method_title": "Credit Card",
+  "shipping_total": "10.00",
+  "discount_total": "5.00",
+  "billing": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "company": "Acme Corp",
+    "address_1": "123 Main Street",
+    "address_2": "Apt 4B",
+    "city": "Seattle",
+    "state": "WA",
+    "postcode": "98101",
+    "country": "US",
+    "email": "john.doe@example.com",
+    "phone": "+1-555-123-4567"
+  },
+  "shipping": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "company": "Acme Corp",
+    "address_1": "123 Main Street",
+    "address_2": "Apt 4B",
+    "city": "Seattle",
+    "state": "WA",
+    "postcode": "98101",
+    "country": "US"
+  },
+  "line_items": [
+    {
+      "id": 1,
+      "name": "Wireless Noise-Canceling Headphones",
+      "product_id": 401,
+      "variation_id": 0,
+      "quantity": 1,
+      "sku": "HEADPHONE-NC",
+      "total": "119.99"
+    }
+  ],
+  "refunds": []
+}
