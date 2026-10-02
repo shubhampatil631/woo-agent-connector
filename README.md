@@ -349,3 +349,16 @@ woo-agent-connector/
 - [docs/LIMITATIONS.md](docs/LIMITATIONS.md): System limitations and enterprise roadmap (webhooks, Redis, KMS).
 - [docs/IMPACT.md](docs/IMPACT.md): Quantitative merchant impact measurement plan.
 - [docs/mcp-tools.json](docs/mcp-tools.json): Auto-generated machine-readable MCP tool specification.
+
+---
+
+## 👤 Author & Contact
+
+**Shubham Patil**  
+*Forward-Deployed Engineer Candidate | Agent Studio, Razorpay*
+
+- **LinkedIn**: [linkedin.com/in/shubham-patil-03019a283](https://www.linkedin.com/in/shubham-patil-03019a283/)
+- **Email**: [sup31patil@gmail.com](mailto:sup31patil@gmail.com)
+- **Phone**: +91 9373868631
+- **GitHub**: [github.com/shubhampatil631](https://github.com/shubhampatil631)
+

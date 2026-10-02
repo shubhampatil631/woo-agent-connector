@@ -3,6 +3,7 @@
 **Repository**: [https://github.com/shubhampatil631/woo-agent-connector](https://github.com/shubhampatil631/woo-agent-connector)  
 **Role**: Forward-Deployed Engineer (FDE), Agent Studio  
 **Author**: Shubham Patil  
+**Contact**: [LinkedIn](https://www.linkedin.com/in/shubham-patil-03019a283/) | [sup31patil@gmail.com](mailto:sup31patil@gmail.com) | +91 9373868631  
 **Version**: `v1.0.0`
 
 ---
