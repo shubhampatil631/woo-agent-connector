@@ -16,7 +16,10 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import httpx
+from dotenv import load_dotenv
 from faker import Faker
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
