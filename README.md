@@ -10,7 +10,7 @@ A high-performance, private, read-only connector enabling Agent Studio agents to
 
 ## Project Structure
 ```text
-woo-connector/
+woo-agent-connector/
 ├── src/woo_connector/
 │   ├── __init__.py
 │   ├── config.py
