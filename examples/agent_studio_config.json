@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/mcp-config.json",
+  "mcpServers": {
+    "woocommerce-stdio": {
+      "command": "woo-mcp",
+      "args": ["--transport", "stdio"],
+      "env": {
+        "WOO_BASE_URL": "http://localhost:8080",
+        "WOO_CONSUMER_KEY": "ck_example_placeholder_key",
+        "WOO_CONSUMER_SECRET": "cs_example_placeholder_secret",
+        "WOO_AUTH_TYPE": "api_key",
+        "PII_MODE": "redacted",
+        "MAX_PAGE_SIZE": "50",
+        "RATE_LIMIT_RPS": "5"
+      },
+      "description": "Private WooCommerce connector running via stdio subprocess"
+    },
+    "woocommerce-http": {
+      "url": "http://localhost:8000/sse",
+      "headers": {
+        "Authorization": "Bearer connector_api_key_placeholder"
+      },
+      "description": "Private WooCommerce connector running as streamable HTTP/SSE service"
+    }
+  }
+}

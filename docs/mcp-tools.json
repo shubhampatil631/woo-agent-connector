@@ -1,0 +1,586 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WooCommerce Agent Studio Connector MCP Specification",
+  "version": "0.1.0",
+  "description": "Machine-readable specification for read-only WooCommerce Agent Studio tools",
+  "transport": [
+    "stdio",
+    "http/sse"
+  ],
+  "tools": [
+    {
+      "name": "list_orders",
+      "description": "List WooCommerce orders with filtering by status, date range, or customer. Returns compact OrderSummary items and pagination metadata (total, total_pages, has_more). Use this to inspect recent store orders or query orders in a specific lifecycle state (e.g., 'processing', 'completed', 'pending', 'on-hold', 'cancelled', 'refunded', 'failed'). DO NOT use this to search by customer name or keyword (use search_orders instead).",
+      "inputSchema": {
+        "properties": {
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "after": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "After"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Before"
+          },
+          "customer_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Customer Id"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "default": 50,
+            "title": "Per Page",
+            "type": "integer"
+          }
+        },
+        "title": "list_ordersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "get_order",
+      "description": "Retrieve full details for a single known WooCommerce order by integer order ID. Returns purchased line items, variation IDs, pricing, refund history, and privacy-redacted billing/shipping addresses. Use when you need line item details or delivery addresses for a specific order ID.",
+      "inputSchema": {
+        "properties": {
+          "order_id": {
+            "title": "Order Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "order_id"
+        ],
+        "title": "get_orderArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "search_orders",
+      "description": "Search orders by text query matching order numbers, customer names, emails, or billing and shipping address fields. Returns matching OrderSummary items with pagination. Use when finding orders by partial query text or customer name.",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "default": 50,
+            "title": "Per Page",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "search_ordersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "list_products",
+      "description": "List products in the store catalog with optional status, stock_status ('instock', 'outofstock', 'onbackorder'), and category filters. Returns ProductSummary items with price and stock status. DO NOT use this for text keyword searching (use search_products instead).",
+      "inputSchema": {
+        "properties": {
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "stock_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Stock Status"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Category"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "default": 50,
+            "title": "Per Page",
+            "type": "integer"
+          }
+        },
+        "title": "list_productsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "get_product",
+      "description": "Retrieve product metadata, SKU, type, pricing, and stock status for a single known product by integer product ID.",
+      "inputSchema": {
+        "properties": {
+          "product_id": {
+            "title": "Product Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "title": "get_productArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "search_products",
+      "description": "Search catalog products by text keyword (matching title/description) or exact SKU. Returns matching ProductSummary items with pricing and stock availability.",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Query"
+          },
+          "sku": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sku"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "default": 50,
+            "title": "Per Page",
+            "type": "integer"
+          }
+        },
+        "title": "search_productsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "get_stock",
+      "description": "Check real-time stock levels, stock status ('instock', 'outofstock'), and low-stock alerts for a specific product by integer ID or SKU string.",
+      "inputSchema": {
+        "properties": {
+          "product_id_or_sku": {
+            "title": "Product Id Or Sku",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product_id_or_sku"
+        ],
+        "title": "get_stockArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "list_low_stock",
+      "description": "List products currently at or below the specified stock quantity threshold (default: 5 units) or marked as out-of-stock. Use this tool to identify inventory needing restocking.",
+      "inputSchema": {
+        "properties": {
+          "threshold": {
+            "default": 5,
+            "title": "Threshold",
+            "type": "integer"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "default": 50,
+            "title": "Per Page",
+            "type": "integer"
+          }
+        },
+        "title": "list_low_stockArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "get_store_status",
+      "description": "Check WooCommerce store connection health, WordPress/WooCommerce software versions, store currency, currency symbol, and timezone configuration.",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_store_statusArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Structured domain model or paginated result dictionary"
+      },
+      "errorCodes": [
+        {
+          "code": "AUTH_FAILED",
+          "description": "API credentials invalid or insufficient permissions",
+          "retryable": false
+        },
+        {
+          "code": "NOT_FOUND",
+          "description": "Requested order, product, or resource does not exist",
+          "retryable": false
+        },
+        {
+          "code": "RATE_LIMITED",
+          "description": "WooCommerce rate limits reached after maximum retries exhausted",
+          "retryable": true
+        },
+        {
+          "code": "UPSTREAM_ERROR",
+          "description": "WooCommerce or WordPress server returned 5xx status or network timeout",
+          "retryable": true
+        },
+        {
+          "code": "INVALID_INPUT",
+          "description": "Malformed input parameters (invalid date format, negative page numbers)",
+          "retryable": false
+        }
+      ]
+    }
+  ]
+}

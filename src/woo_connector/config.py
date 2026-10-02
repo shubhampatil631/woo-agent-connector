@@ -110,6 +110,13 @@ class Settings(BaseSettings):
         ),
         description="Optional API key securing the MCP connector HTTP endpoint",
     )
+    strict_readonly: bool = Field(
+        default=False,
+        validation_alias=AliasChoices(
+            "STRICT_READONLY", "WOO_STRICT_READONLY", "strict_readonly"
+        ),
+        description="Enforce strict rejection on startup if key possesses write capabilities",
+    )
 
     @field_validator("base_url", mode="before")
     @classmethod
