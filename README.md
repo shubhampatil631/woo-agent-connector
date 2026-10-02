@@ -170,7 +170,7 @@ woo-agent-connector/
 │   ├── models.py                # Compact, agent-friendly domain models
 │   ├── tools.py                 # 9 transport-agnostic read primitives
 │   └── server.py                # FastMCP server + stdio/HTTP transports
-├── tests/                       # Automated test suite (69 tests, 90% coverage)
+├── tests/                       # Automated test suite (72 tests, 90% coverage)
 │   ├── test_auth.py             # Auth flows & credential checks
 │   ├── test_client.py           # Rate limiting & exponential backoff
 │   ├── test_config.py           # Settings validation & secret masking
