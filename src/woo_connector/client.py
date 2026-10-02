@@ -240,6 +240,21 @@ class WooClient:
         if not self._external_client and self._client:
             await self._client.aclose()
 
+    async def request(
+        self,
+        method: str,
+        path: str,
+        params: dict[str, Any] | None = None,
+        **kwargs: Any,
+    ) -> Any:
+        """Execute request, strictly prohibiting non-GET HTTP methods."""
+        if method.upper() != "GET":
+            raise ValidationError(
+                f"HTTP method '{method.upper()}' is prohibited. "
+                "The WooCommerce Agent Studio Connector is strictly read-only."
+            )
+        return await self.get(path=path, params=params)
+
     async def get(
         self,
         path: str,

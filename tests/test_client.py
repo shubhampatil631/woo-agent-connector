@@ -231,3 +231,37 @@ def test_sanitize_url_for_logging():
     assert "cs_secret" not in clean_url
     assert "REDACTED" in clean_url
     assert "page=1" in clean_url
+
+
+@pytest.mark.asyncio
+async def test_client_strictly_rejects_non_get_methods(test_config):
+    """Confirm no write HTTP methods (POST, PUT, DELETE, PATCH) can be issued."""
+    async with WooClient(config=test_config) as client:
+        for write_method in ["POST", "PUT", "DELETE", "PATCH", "post", "delete"]:
+            with pytest.raises(ValidationError) as exc:
+                await client.request(write_method, "/wp-json/wc/v3/orders")
+            assert "prohibited" in str(exc.value).lower()
+            assert "strictly read-only" in str(exc.value).lower()
+
+
+@respx.mock
+async def test_client_logging_never_leaks_secrets(test_config, caplog):
+    """Confirm client request logs never leak secret keys or sensitive tokens."""
+    import logging
+
+    respx.get("https://test-store.example.com/wp-json/wc/v3/orders").respond(
+        status_code=200,
+        json=[],
+    )
+
+    caplog.set_level(logging.DEBUG)
+    async with WooClient(config=test_config) as client:
+        await client.get(
+            "/wp-json/wc/v3/orders",
+            params={"consumer_key": "ck_test_key_123", "consumer_secret": "cs_test_sec_456"},
+        )
+
+    log_text = caplog.text
+    assert "ck_test_key_123" not in log_text
+    assert "cs_test_sec_456" not in log_text
+    assert "REDACTED" in log_text
